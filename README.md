@@ -1,9 +1,10 @@
 # Телеграм бот приложения "Мини-банк"
-Данный сервис представляет собой frontend -  часть приложения "Мини-банк"
+Данный сервис представляет собой frontend - часть приложения "Мини-банк"
 
 ## Что делает
 ![img.png](img.png)
 
+## TO BE
 ```plantuml
 @startuml
 actor Client
@@ -22,3 +23,6 @@ TelegramBot -> Client: Ответ
 deactivate TelegramBot
 @enduml
 ```
+
+## Участники
+В случае вопросов обращатся [Морковникову Виктору](https://github.com/RojoBlanco).
