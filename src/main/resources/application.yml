@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: TelegramBot
+telegram:
+  botName: Minibank
+  token: ${TELEGRAM_TOKEN}
