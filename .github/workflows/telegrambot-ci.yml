@@ -28,8 +28,12 @@ jobs:
 
       - name: Test with Gradle
         run: ./gradlew test
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
 
       - name: Build with Gradle
         run: ./gradlew build
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
 
 
