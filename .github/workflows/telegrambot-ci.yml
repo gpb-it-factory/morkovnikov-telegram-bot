@@ -27,13 +27,9 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Test with Gradle
-        run: ./gradlew test
-        env:
-          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+        run: ./gradlew test --scan --info
 
       - name: Build with Gradle
-        run: ./gradlew build
-        env:
-          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+        run: ./gradlew build -x test -x test
 
 
