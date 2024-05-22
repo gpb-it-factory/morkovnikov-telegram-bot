@@ -10,7 +10,7 @@ import ru.gpb.telegrambot.uitl.createMessage
 @Service
 class TelegramBot(
     commands: Set<BotCommand>,
-    @Value("\${telegram.token:}")
+    @Value("\${telegram.token}")
     token: String
 ) : TelegramLongPollingCommandBot(token) {
 
