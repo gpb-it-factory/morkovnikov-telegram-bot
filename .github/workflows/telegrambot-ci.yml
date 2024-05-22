@@ -30,4 +30,4 @@ jobs:
         run: ./gradlew test --scan --info
 
       - name: Build with Gradle
-        run: ./gradlew build -x test -x test
+        run: ./gradlew build -x test
