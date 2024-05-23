@@ -3,4 +3,4 @@ spring:
     name: TelegramBot
 telegram:
   botName: Minibank
-  token: ${TELEGRAM_TOKEN}
+  token: ${TELEGRAM_TOKEN:}
