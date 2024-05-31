@@ -14,15 +14,16 @@ import ru.gpb.telegrambot.enums.CommandEnum
 import ru.gpb.telegrambot.uitl.createMessage
 
 @Component
-class RegisterCommand : BotCommand(CommandEnum.REGISTER.command, CommandEnum.REGISTER.description) {
-
+class RegisterCommand(
+    private val responseTemplate: RestTemplate,
     @Value("\${midle-service.url}")
-    private lateinit var url: String
+    private val url: String,
+) : BotCommand(CommandEnum.REGISTER.command, CommandEnum.REGISTER.description) {
 
     override fun execute(absSender: AbsSender, user: User, chat: Chat, arguments: Array<out String>) {
-        val registerEndpoint = "$url/register"
+        val registerEndpoint = "${url}/register"
         val requestBody = mapOf("telegramUserId" to user.id)
-        val responseTemplate = RestTemplate()
+
         try {
             val response: ResponseEntity<String> = responseTemplate.postForEntity(registerEndpoint, requestBody, String::class)
             absSender.execute(createMessage(chat.id, "${response.body}"))

@@ -11,15 +11,14 @@ import ru.gpb.telegrambot.uitl.createMessage
 class TelegramBot(
     commands: Set<BotCommand>,
     @Value("\${telegram.token}")
-    token: String
+    token: String,
+    @Value("\${telegram.botName}")
+    private val botName: String = ""
 ) : TelegramLongPollingCommandBot(token) {
 
     init {
         registerAll(*commands.toTypedArray())
     }
-
-    @Value("\${telegram.botName}")
-    private val botName: String = ""
 
     override fun getBotUsername(): String = botName
     override fun processNonCommandUpdate(update: Update) {
