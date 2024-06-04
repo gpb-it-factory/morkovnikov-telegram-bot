@@ -1,57 +1,73 @@
 package ru.gpb.telegrambot.commands
-
-import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import org.mockito.ArgumentCaptor
-import org.mockito.Mockito
-import org.springframework.http.ResponseEntity
+import org.mockito.Mockito.*
 import org.springframework.web.client.ResourceAccessException
-import org.springframework.web.client.RestTemplate
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage
-import org.telegram.telegrambots.meta.api.objects.Chat
-import org.telegram.telegrambots.meta.api.objects.User
-import org.telegram.telegrambots.meta.bots.AbsSender
+import org.springframework.web.client.RestClient
+import org.springframework.web.client.RestClientResponseException
+import ru.gpb.telegrambot.client.MiddleServiceClient
+import kotlin.random.Random
 
 class RegisterCommandTest {
-    private val url = "http://pepega.ru"
-    private val absSender = Mockito.mock(AbsSender::class.java)
-    private val user = User().apply { id = 1402L }
-    private val chat = Chat().apply { id = 70701L }
-    private val restTemplate = Mockito.mock(RestTemplate::class.java)
+    private val restClient = mock(RestClient::class.java)
+    private val middleServiceClient = MiddleServiceClient(restClient)
 
     @Test
-    fun successfulResponse(){
-        val responseEntity = ResponseEntity.ok("Пользователь ${user.id} успешно зарегестрирован")
+    @DisplayName("Успешная регистрация пользователя")
+    fun successRegisterUser() {
+        val telegramUserId = Random.nextLong()
+        val requestBody = mapOf("telegramUserId" to telegramUserId)
 
-        Mockito.`when`(restTemplate.postForEntity("$url/register", mapOf("telegramUserId" to user.id), String::class.java))
-            .thenReturn(responseEntity)
+        val requestSpec = mock(RestClient.RequestBodyUriSpec::class.java)
+        val responseSpec = mock(RestClient.ResponseSpec::class.java)
 
-        val command = RegisterCommand(restTemplate, url)
-        command.execute(absSender,user,chat, arrayOf())
+        `when`(restClient.post()).thenReturn(requestSpec)
+        `when`(requestSpec.uri("/register")).thenReturn(requestSpec)
+        `when`(requestSpec.body(requestBody)).thenReturn(requestSpec)
+        `when`(requestSpec.retrieve()).thenReturn(responseSpec)
+        `when`(responseSpec.body(String::class.java)).thenReturn("Пользователь ${telegramUserId} успешно зарегестрирован")
 
-        val argumentCaptor = ArgumentCaptor.forClass(SendMessage::class.java)
-        Mockito.verify(absSender).execute(argumentCaptor.capture())
-
-        val capturedMessage = argumentCaptor.value
-        Assertions.assertEquals("70701", capturedMessage.chatId)
-        Assertions.assertEquals("Пользователь ${user.id} успешно зарегестрирован", capturedMessage.text)
+        val result = middleServiceClient.registerUser(telegramUserId)
+        assertEquals("Пользователь ${telegramUserId} успешно зарегестрирован", result)
     }
 
     @Test
-    fun `Failed to connect to the server` (){
+    @DisplayName("Не удалось подключиться к сервису")
+    fun connectServiceErrorTest() {
+        val telegramUserId = Random.nextLong()
+        val requestBody = mapOf("telegramUserId" to telegramUserId)
 
+        val requestSpec = mock(RestClient.RequestBodyUriSpec::class.java)
+        val responseSpec = mock(RestClient.ResponseSpec::class.java)
 
-        Mockito.`when`(restTemplate.postForEntity("$url/register", mapOf("telegramUserId" to user.id), String::class.java))
-            .thenThrow(ResourceAccessException("Service unavailable"))
+        `when`(restClient.post()).thenReturn(requestSpec)
+        `when`(requestSpec.uri("/register")).thenReturn(requestSpec)
+        `when`(requestSpec.body(requestBody)).thenReturn(requestSpec)
+        `when`(requestSpec.retrieve()).thenReturn(responseSpec)
+        `when`(responseSpec.body(String::class.java)).thenThrow(ResourceAccessException::class.java)
 
-        val command = RegisterCommand(restTemplate, url)
-        command.execute(absSender,user,chat, arrayOf())
-
-        val argumentCaptor = ArgumentCaptor.forClass(SendMessage::class.java)
-        Mockito.verify(absSender).execute(argumentCaptor.capture())
-
-        val capturedMessage = argumentCaptor.value
-        Assertions.assertEquals("70701", capturedMessage.chatId)
-        Assertions.assertEquals("Извините, сервис сейчас не работает", capturedMessage.text)
+        val result = middleServiceClient.registerUser(telegramUserId)
+        assertEquals("Извините, сервис сейчас не работает", result)
     }
+    @Test
+    @DisplayName("Получение ошибки по вине клиента или сервера")
+    fun clientResponseExceptionTest() {
+        val telegramUserId = Random.nextLong()
+        val requestBody = mapOf("telegramUserId" to telegramUserId)
+
+        val requestSpec = mock(RestClient.RequestBodyUriSpec::class.java)
+        val responseSpec = mock(RestClient.ResponseSpec::class.java)
+
+        `when`(restClient.post()).thenReturn(requestSpec)
+        `when`(requestSpec.uri("/register")).thenReturn(requestSpec)
+        `when`(requestSpec.body(requestBody)).thenReturn(requestSpec)
+        `when`(requestSpec.retrieve()).thenReturn(responseSpec)
+        `when`(responseSpec.body(String::class.java)).thenThrow(RestClientResponseException::class.java)
+
+        val result = middleServiceClient.registerUser(telegramUserId)
+        assertEquals("Ошибка регистрации пользователя", result)
+    }
+
 }
+
