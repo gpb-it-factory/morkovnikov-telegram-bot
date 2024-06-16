@@ -4,14 +4,12 @@ import org.springframework.stereotype.Component
 import org.springframework.web.client.ResourceAccessException
 import org.springframework.web.client.RestClient
 import org.springframework.web.client.RestClientResponseException
-import ru.gpb.telegrambot.config.RestConfig
-import ru.gpb.telegrambot.uitl.createMessage
 
 @Component
-class MiddleServiceClient(
+class MiddleServiceRestClient(
     private val restClient: RestClient
-) {
-    fun registerUser(telegramUserId: Long): String {
+): MiddleServiceClient {
+    override fun registerUser(telegramUserId: Long): String {
         val registerEndpoint = "/register"
         val requestBody = mapOf("telegramUserId" to telegramUserId)
 
