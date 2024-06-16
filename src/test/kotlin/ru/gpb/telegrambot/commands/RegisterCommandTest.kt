@@ -12,9 +12,9 @@ class RegisterCommandTest {
     @DisplayName("Успешная регистрация пользователя")
     fun successRegisterUser() {
         val telegramUserId = Random.nextLong()
+        val userName = "pepega1"
 
-
-        val result = middleServiceClient.registerUser(telegramUserId)
+        val result = middleServiceClient.registerUser(telegramUserId, userName)
 
         assertEquals("Пользователь ${telegramUserId} успешно зарегестрирован", result)
     }

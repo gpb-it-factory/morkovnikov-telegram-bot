@@ -14,7 +14,7 @@ class RegisterCommand(
 ) : BotCommand("register", "register new user") {
 
     override fun execute(absSender: AbsSender, user: User, chat: Chat, arguments: Array<out String>) {
-            val response= middleServiceClient.registerUser(user.id)
+            val response= middleServiceClient.registerUser(user.id, user.userName)
             absSender.execute(createMessage(chat.id, response))
     }
 }

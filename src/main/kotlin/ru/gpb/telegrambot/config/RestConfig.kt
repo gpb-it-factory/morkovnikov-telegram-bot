@@ -11,7 +11,7 @@ class RestConfig(
     private val baseUrl: String
 ) {
     @Bean
-    fun restTemplate(): RestClient {
+    fun restClient(): RestClient {
         return RestClient
             .builder()
             .baseUrl(baseUrl)

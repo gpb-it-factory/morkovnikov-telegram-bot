@@ -9,9 +9,11 @@ import org.springframework.web.client.RestClientResponseException
 class MiddleServiceRestClient(
     private val restClient: RestClient
 ): MiddleServiceClient {
-    override fun registerUser(telegramUserId: Long): String {
+    override fun registerUser(telegramUserId: Long, telegramUserName: String): String {
         val registerEndpoint = "/register"
-        val requestBody = mapOf("telegramUserId" to telegramUserId)
+        val requestBody = mapOf(
+            "telegramUserId" to telegramUserId,
+            "telegramUserName" to telegramUserName)
 
         return try{
             val response = restClient.post()
