@@ -12,7 +12,7 @@ class RegisterCommandTest {
     @DisplayName("Успешная регистрация пользователя")
     fun successRegisterUser() {
         val telegramUserId = Random.nextLong()
-        val requestBody = mapOf("telegramUserId" to telegramUserId)
+
 
         val result = middleServiceClient.registerUser(telegramUserId)
 
